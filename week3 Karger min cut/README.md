@@ -1,4 +1,4 @@
-#<center>Algo week 3: Karger min cut </center>
+#Algo week 3: Karger min cut
 ***
 It is week three for the Algorithms course, and the main topic is the Karger minimum cut problem for an undirected graph. The Karger algo itself is clean and neat, however it can also be cumbersome to implement for me who lacks good understanding of data structures. I spent some pre-work to figure out what would be the best choice to represent the graph, or adjacency list. My gut feeling is dictionary would work but not beautifully. I decide to construct a class to implement the graph for two reasons: make things neat and practice with class. I try to follow PEP8 and code with less comments in a sense that the style should make the codes easily readable.
 

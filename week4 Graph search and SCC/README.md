@@ -1,4 +1,4 @@
-#<center>Algo week 4: Graph search and Kosaraju SSC finder </center>
+#Algo week 4: Graph search and Kosaraju SSC finder
 ***
 Breath First Search(BFS) and Depth First Search(DFS) are the basics of graph search, which I actually learned about before from [edx](http://www.edx.org)’s popular AI course. That’s when I started to check out what computer science could be. I was taking another popular edx course(MIT’s intro to CS and Programming) at the same time, which was good because the course level matched my weak background. But the AI course was just beyond my scope, with no surprise I struggled a lot and I still remember hours and hours me staring at the code and Googling around trying to make sense everything. What I am proud of is at the end I managed to finish the course with a final grade of 94%. I should probably had taken that course some time later and I could be more efficient. But that achievement was huge for me at that time and it was definitely one of the indispensables that drive me go deeper into CS.
 

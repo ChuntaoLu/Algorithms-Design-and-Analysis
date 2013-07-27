@@ -1,4 +1,4 @@
-#<center>Algo week 1: Merge sort</center>
+#Algo week 1: Merge sort
 ***
 Divide-and-conquer is a great way to tackle down problems which seem hard to solve on surface. By recursively breaking down the original problem into sub-problems of same type, a divide and conquer algorithm solves the problem efficiently.  
 
