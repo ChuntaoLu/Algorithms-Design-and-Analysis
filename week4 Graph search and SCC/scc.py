@@ -1,6 +1,7 @@
 #This script computes the strong connected components(SCC) of a given graph.
 import sys
 import time
+import heapq
 import resource
 from itertools import groupby
 from collections import defaultdict
@@ -86,11 +87,13 @@ def main():
     groups = scc(graph, reverse_graph, nodes)
     t2 = time.time() - start
     print t2
-    sorted_groups = sorted(groups, key=lambda x: len(groups[x]), reverse=True)
+    top_5 = heapq.nlargest(5, groups, key=lambda x: len(groups[x]))
+    #sorted_groups = sorted(groups, key=lambda x: len(groups[x]), reverse=True)
     result = []
     for i in range(5):
         try:
-            result.append(len(groups[sorted_groups[i]]))
+            result.append(len(groups[top_5[i]]))
+            #result.append(len(groups[sorted_groups[i]]))
         except:
             result.append(0)
     return result
