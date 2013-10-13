@@ -12,9 +12,11 @@ sys.setrecursionlimit(10 ** 6)
 resource.setrlimit(resource.RLIMIT_STACK, (2 ** 29, 2 ** 30))
 
 
-class Track(object):
+class Tracker(object):
     """Keeps track of the current time, current source, component leader,
-    finish time of each node and the explored nodes."""
+    finish time of each node and the explored nodes.
+    
+    'self.leader' is informs of {node: leader, ...}."""
 
     def __init__(self):
         self.current_time = 0
@@ -24,46 +26,61 @@ class Track(object):
         self.explored = set()
 
 
-def dfs(graph_dict, node, track):
+def dfs(graph_dict, node, tracker):
     """Inner loop explores all nodes in a SCC. Graph represented as a dict,
-    {tail node: [head nodes]}. Depth first search runs recrusively and keeps
+    {tail: [head_list], ...}. Depth first search runs recursively and keeps
     track of the parameters"""
 
-    track.explored.add(node)
-    track.leader[node] = track.current_source
+    tracker.explored.add(node)
+    tracker.leader[node] = tracker.current_source
     for head in graph_dict[node]:
-        if head not in track.explored:
-            dfs(graph_dict, head, track)
-    track.current_time += 1
-    track.finish_time[node] = track.current_time
+        if head not in tracker.explored:
+            dfs(graph_dict, head, tracker)
+    tracker.current_time += 1
+    tracker.finish_time[node] = tracker.current_time
 
 
-def dfs_loop(graph_dict, nodes, track):
-    """Outter loop checks out all SCCs. Current source node changes when one
+def dfs_loop(graph_dict, nodes, tracker):
+    """Outer loop checks out all SCCs. Current source node changes when one
     SCC inner loop finishes."""
 
     for node in nodes:
-        if node not in track.explored:
-            track.current_source = node
-            dfs(graph_dict, node, track)
+        if node not in tracker.explored:
+            tracker.current_source = node
+            dfs(graph_dict, node, tracker)
 
 
-def scc(graph, reverse_graph, nodes):
+def graph_reverse(graph):
+    """Given a directed graph in forms of {tail:[head_list], ...}, compute
+    a reversed directed graph, in which every edge changes direction."""
+
+    reversed_graph = defaultdict(list)
+    for tail, head_list in graph.items():
+        for head in head_list:
+            reversed_graph[head].append(tail)
+    return reversed_graph
+
+
+def scc(graph):
     """First runs dfs_loop on reversed graph with nodes in decreasing order,
-    then runs dfs_loop on orignial graph with nodes in decreasing finish
-    time order(obatined from firt run). Return a dict of {leader: SCC}."""
+    then runs dfs_loop on original graph with nodes in decreasing finish
+    time order(obtained from first run). Return a dict of {leader: SCC}."""
 
     out = defaultdict(list)
-    track = Track()
-    dfs_loop(reverse_graph, nodes, track)
-    sorted_nodes = sorted(track.finish_time,
-                          key=track.finish_time.get, reverse=True)
-    track.current_time = 0
-    track.current_source = None
-    track.explored = set()
-    dfs_loop(graph, sorted_nodes, track)
-    for lead, vertex in groupby(sorted(track.leader, key=track.leader.get),
-                                key=track.leader.get):
+    tracker1 = Tracker()
+    tracker2 = Tracker()
+    nodes = set()
+    reversed_graph = graph_reverse(graph)
+    for tail, head_list in graph.items():
+        nodes |= set(head_list)
+        nodes.add(tail)
+    nodes = sorted(list(nodes), reverse=True)
+    dfs_loop(reversed_graph, nodes, tracker1)
+    sorted_nodes = sorted(tracker1.finish_time,
+                          key=tracker1.finish_time.get, reverse=True)
+    dfs_loop(graph, sorted_nodes, tracker2)
+    for lead, vertex in groupby(sorted(tracker2.leader, key=tracker2.leader.get),
+                                key=tracker2.leader.get):
         out[lead] = list(vertex)
     return out
 
@@ -71,20 +88,15 @@ def scc(graph, reverse_graph, nodes):
 def main():
     start = time.time()
     graph = defaultdict(list)
-    reverse_graph = defaultdict(list)
-    nodes = set()
     with open('SCC.txt') as file_in:
     #with open('test.txt') as file_in:
         for line in file_in:
             x = line.strip().split()
             x1, x2 = int(x[0]), int(x[1])
-            nodes |= set([x1, x2])
             graph[x1].append(x2)
-            reverse_graph[x2].append(x1)
-    nodes = sorted(list(nodes), reverse=True)
     t1 = time.time() - start
     print t1
-    groups = scc(graph, reverse_graph, nodes)
+    groups = scc(graph)
     t2 = time.time() - start
     print t2
     top_5 = heapq.nlargest(5, groups, key=lambda x: len(groups[x]))
