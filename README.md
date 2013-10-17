@@ -16,4 +16,5 @@ This repo contains my Python scripts and notes for Stanford's [Algorithms: Desig
 + week12 local search and 2SAT problem
 
 <small>Notes after week6 are embedded in scripts as comments.</small>
+
 <small>This repo is for personal study only and I have no intention to go against the honor code.</small> 
